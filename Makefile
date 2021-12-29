@@ -101,6 +101,7 @@ feeds-update: stamp-clean-feeds-updated .stamp-feeds-updated
 	cd $(OPENWRT_DIR); ./scripts/feeds install luaposix
 	cd $(OPENWRT_DIR); ./scripts/feeds install luasocket
 	cd $(OPENWRT_DIR); ./scripts/feeds install mmc-utils
+	cd $(OPENWRT_DIR); ./scripts/feeds install iperf3
 	touch $@
 
 # prepare patch
@@ -145,9 +146,9 @@ compile: stamp-clean-compiled .stamp-compiled
 	$(TOP_DIR)/scripts/tests-prebuild.sh
 	$(UMASK); \
 	  $(MAKE) -C $(OPENWRT_DIR) $(MAKE_ARGS)
-	for FILE in `find $(TOP_DIR)/firmware/targets/ -path "*packages" -prune -o \( -type f -a \
+	for FILE in `find $(TOP_DIR)/firmware/targets/$(MAINTARGET)/$(SUBTARGET) -path "*packages" -prune -o \( -type f -a \
 	  ! \( -name "*factory.bin" -o -name "*sysupgrade.bin" -o -name "*initramfs.elf" -o \
-	  -name sha256sums -o -name "*.buildinfo" -o -name "*.json" \) \
+	  -name "*kernel.bin" -o -name sha256sums -o -name "*.buildinfo" \) \
 	  -print \)`; do rm $$FILE; \
 	done;
 	$(TOP_DIR)/scripts/tests-postbuild.sh
